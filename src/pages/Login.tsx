@@ -28,15 +28,20 @@ const Login = () => {
       
       // Check if user is admin and redirect accordingly
       if (isAdmin) {
+        console.log("Admin user detected, redirecting to admin dashboard");
         navigate("/admin");
+        toast({
+          title: "Welcome back, Admin!",
+          description: "You have successfully logged in to the admin dashboard.",
+        });
       } else {
+        console.log("Donor user detected, redirecting to donor dashboard");
         navigate("/");
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in to your donor portal.",
+        });
       }
-      
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
     } catch (error: any) {
       console.error("Login error:", error);
       
