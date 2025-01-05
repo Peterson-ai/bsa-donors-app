@@ -60,8 +60,13 @@ export const DonationForm = ({
 
   const finalAmount = selectedAmount || (customAmount ? Number(customAmount) : null);
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    // Prevent the form from submitting on its own
+    e.preventDefault();
+  };
+
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
+    <form onSubmit={handleFormSubmit} className="space-y-6">
       <DonationOptions 
         options={donationOptions}
         selectedAmount={selectedAmount}
