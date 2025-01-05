@@ -8,6 +8,7 @@ import CreateAdminPage from "@/pages/admin/CreateAdminPage";
 import DonorList from "@/pages/admin/DonorList";
 import DonorProfilingPage from "@/pages/admin/DonorProfilingPage";
 import EngagementAnalysisPage from "@/pages/admin/EngagementAnalysisPage";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 export const adminRoutes = [
   {
@@ -19,67 +20,16 @@ export const adminRoutes = [
     element: (
       <AdminRoute>
         <AdminLayout>
-          <AdminDashboard />
-        </AdminLayout>
-      </AdminRoute>
-    )
-  },
-  {
-    path: "/admin/settings",
-    element: (
-      <AdminRoute>
-        <AdminLayout>
-          <AdminSettingsPage />
-        </AdminLayout>
-      </AdminRoute>
-    )
-  },
-  {
-    path: "/admin/analytics",
-    element: (
-      <AdminRoute>
-        <AdminLayout>
-          <AnalyticsPage />
-        </AdminLayout>
-      </AdminRoute>
-    )
-  },
-  {
-    path: "/admin/campaigns",
-    element: (
-      <AdminRoute>
-        <AdminLayout>
-          <CampaignsManagementPage />
-        </AdminLayout>
-      </AdminRoute>
-    )
-  },
-  {
-    path: "/admin/donors",
-    element: (
-      <AdminRoute>
-        <AdminLayout>
-          <DonorList />
-        </AdminLayout>
-      </AdminRoute>
-    )
-  },
-  {
-    path: "/admin/donor-profiling",
-    element: (
-      <AdminRoute>
-        <AdminLayout>
-          <DonorProfilingPage />
-        </AdminLayout>
-      </AdminRoute>
-    )
-  },
-  {
-    path: "/admin/engagement",
-    element: (
-      <AdminRoute>
-        <AdminLayout>
-          <EngagementAnalysisPage />
+          <Routes>
+            <Route index element={<AdminDashboard />} />
+            <Route path="settings" element={<AdminSettingsPage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="campaigns" element={<CampaignsManagementPage />} />
+            <Route path="donors" element={<DonorList />} />
+            <Route path="donor-profiling" element={<DonorProfilingPage />} />
+            <Route path="engagement" element={<EngagementAnalysisPage />} />
+            <Route path="*" element={<Navigate to="/admin" replace />} />
+          </Routes>
         </AdminLayout>
       </AdminRoute>
     )
