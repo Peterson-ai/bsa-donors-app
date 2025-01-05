@@ -149,7 +149,7 @@ const Login = () => {
           <p className="text-sm text-gray-600">Don't have an account?</p>
           <Button
             variant="outline"
-            className="mt-2 w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+            className="mt-2 w-full bg-gradient-to-r from-[#1a365d] to-[#0d9488] hover:from-[#1a365d]/90 hover:to-[#0d9488]/90 text-white border-0 transition-all duration-200 ease-in-out hover:shadow-lg"
             onClick={() => navigate("/register")}
             disabled={isLoading}
           >
