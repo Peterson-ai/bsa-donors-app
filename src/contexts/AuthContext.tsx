@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Get the initial session
         const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -59,25 +58,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    // Initialize auth state
     initializeAuth();
 
-    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log("Auth state changed:", event);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
 
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed successfully');
+      if (event === 'SIGNED_IN') {
+        // Check if user is admin and redirect accordingly
+        const adminStatus = await isAdmin;
+        if (adminStatus) {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate, isAdmin]);
 
   const signIn = async (email: string, password: string) => {
     if (!isConnected) {
@@ -95,12 +98,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) throw error;
       
-      toast.success("Successfully signed in!");
+      const adminStatus = await isAdmin;
       
-      // Redirect based on user role
-      if (isAdmin) {
+      if (adminStatus) {
+        toast.success("Welcome back, Admin!");
         navigate("/admin");
       } else {
+        toast.success("Successfully signed in!");
         navigate("/");
       }
     } catch (error) {
