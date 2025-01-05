@@ -121,7 +121,7 @@ const Register = () => {
             <Button
               type="button"
               variant="outline"
-              className="mt-2 w-full border-gray-700 text-black hover:bg-[#1A2235] hover:text-white"
+              className="mt-2 w-full bg-gradient-to-r from-[#1a365d] to-[#0d9488] hover:from-[#1a365d]/90 hover:to-[#0d9488]/90 text-white border-0 transition-all duration-200 ease-in-out hover:shadow-lg"
               onClick={() => navigate("/login")}
             >
               Back to Login
