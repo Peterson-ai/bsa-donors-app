@@ -12,9 +12,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true,
-    storageKey: 'supabase-auth',
-    storage: window.localStorage
+    detectSessionInUrl: false,
+    storageKey: 'supabase.auth.token',
+    storage: localStorage
   },
   db: {
     schema: 'public'
@@ -24,11 +24,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Test the connection and properly handle the Promise
 (async () => {
   try {
-    const { error } = await supabase.from('profiles').select('count', { count: 'exact', head: true });
-    if (error) {
-      throw error;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      console.log('Successfully connected to Supabase with valid session');
+    } else {
+      console.log('Connected to Supabase but no active session');
     }
-    console.log('Successfully connected to Supabase');
   } catch (error) {
     console.error('Error connecting to Supabase:', error);
   }

@@ -36,12 +36,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // Get the initial session
+        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
         
-        if (error) throw error;
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          throw sessionError;
+        }
 
-        setSession(session);
-        setUser(session?.user ?? null);
+        if (initialSession) {
+          setSession(initialSession);
+          setUser(initialSession.user);
+          console.log("Session recovered successfully");
+        }
       } catch (error) {
         console.error("Error in auth initialization:", error);
         if (error instanceof NetworkError) {
@@ -52,17 +59,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
+    // Initialize auth state
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      console.log("Auth state changed:", event);
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
+      setLoading(false);
 
-    return () => subscription.unsubscribe();
+      if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed successfully');
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
