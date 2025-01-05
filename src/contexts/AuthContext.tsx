@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Session, User } from "@supabase/supabase-js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { NetworkError, AuthenticationError } from "@/lib/supabase/errors";
 import { useSupabaseConnection } from "@/lib/supabase/hooks";
@@ -30,8 +30,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isConnected } = useSupabaseConnection();
   const { isAdmin, loading: adminLoading } = useAdmin();
+
+  const handleInitialRedirect = async (currentUser: User) => {
+    if (location.pathname === '/login') {
+      const adminStatus = await isAdmin;
+      if (adminStatus) {
+        navigate('/admin/');
+      } else {
+        navigate('/');
+      }
+    }
+  };
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -47,14 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(initialSession);
           setUser(initialSession.user);
           console.log("Session recovered successfully");
-          
-          // Check admin status and redirect accordingly
-          const adminStatus = await isAdmin;
-          if (adminStatus) {
-            navigate('/admin');
-          } else {
-            navigate('/');
-          }
+          await handleInitialRedirect(initialSession.user);
         }
       } catch (error) {
         console.error("Error in auth initialization:", error);
@@ -73,13 +78,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
 
-      if (event === 'SIGNED_IN') {
-        const adminStatus = await isAdmin;
-        if (adminStatus) {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
+      if (event === 'SIGNED_IN' && currentSession?.user) {
+        await handleInitialRedirect(currentSession.user);
+      }
+      
+      if (event === 'SIGNED_OUT') {
+        navigate('/login');
       }
       
       setLoading(false);
@@ -88,7 +92,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, isAdmin]);
+  }, [navigate, isAdmin, location.pathname]);
 
   const signIn = async (email: string, password: string) => {
     if (!isConnected) {
@@ -110,7 +114,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (adminStatus) {
         toast.success("Welcome back, Admin!");
-        navigate("/admin");
+        navigate("/admin/");
       } else {
         toast.success("Successfully signed in!");
         navigate("/");

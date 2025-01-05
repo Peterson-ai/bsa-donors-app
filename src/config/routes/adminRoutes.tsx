@@ -14,7 +14,7 @@ export const adminRoutes = [
     element: <CreateAdminPage />
   },
   {
-    path: "/admin",
+    path: "/admin/",
     element: (
       <AdminRoute>
         <AdminLayout>
