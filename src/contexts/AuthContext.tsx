@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (location.pathname === '/login') {
       const adminStatus = await isAdmin;
       if (adminStatus) {
-        navigate('/admin/');
+        navigate('/admin/*');
       } else {
         navigate('/');
       }
@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (adminStatus) {
         toast.success("Welcome back, Admin!");
-        navigate("/admin/");
+        navigate("/admin/*");
       } else {
         toast.success("Successfully signed in!");
         navigate("/");
