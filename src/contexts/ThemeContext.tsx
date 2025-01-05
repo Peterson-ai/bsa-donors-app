@@ -32,7 +32,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem("theme", theme);
-    document.documentElement.classList.toggle("dark", theme === "dark");
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.style.setProperty("--background", "222.2 84% 4.9%");
+      document.documentElement.style.setProperty("--foreground", "210 40% 98%");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.setProperty("--background", "0 0% 100%");
+      document.documentElement.style.setProperty("--foreground", "222.2 84% 4.9%");
+    }
   }, [theme]);
 
   useEffect(() => {

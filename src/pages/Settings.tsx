@@ -2,10 +2,14 @@ import { Button } from "@/components/ui/button";
 import { ProfileSettingsSection } from "@/components/settings/ProfileSettingsSection";
 import { NotificationSettingsSection } from "@/components/settings/NotificationSettingsSection";
 import { PreferencesSection } from "@/components/settings/PreferencesSection";
-import { ThemeLanguageSettings } from "@/components/settings/ThemeLanguageSettings";
 import { toast } from "sonner";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const Settings = () => {
+  const { theme, toggleTheme } = useTheme();
+  
   const handleSaveChanges = () => {
     toast.success("Settings saved successfully");
   };
@@ -16,7 +20,22 @@ const Settings = () => {
 
       <div className="space-y-6">
         <ProfileSettingsSection />
-        <ThemeLanguageSettings />
+        
+        <div className="bg-[#1A2235] border-gray-800 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="text-white">Dark Mode</Label>
+              <p className="text-sm text-gray-400">
+                Toggle between light and dark themes
+              </p>
+            </div>
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+            />
+          </div>
+        </div>
+
         <NotificationSettingsSection />
         <PreferencesSection />
       </div>
