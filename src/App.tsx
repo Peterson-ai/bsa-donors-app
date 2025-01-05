@@ -21,9 +21,6 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
-              {/* Redirect root to login if not authenticated */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              
               {/* Public routes (login, register, etc.) */}
               {publicRoutes.map((route) => (
                 <Route key={route.path} {...route} />
@@ -38,6 +35,9 @@ const App = () => (
               {adminRoutes.map((route) => (
                 <Route key={route.path} {...route} />
               ))}
+
+              {/* Redirect unmatched routes to login */}
+              <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           </TooltipProvider>
         </AuthProvider>

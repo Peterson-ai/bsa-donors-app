@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { isConnected } = useSupabaseConnection();
-  const { isAdmin } = useAdmin();
+  const { isAdmin, loading: adminLoading } = useAdmin();
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -47,6 +47,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(initialSession);
           setUser(initialSession.user);
           console.log("Session recovered successfully");
+          
+          // Check admin status and redirect accordingly
+          const adminStatus = await isAdmin;
+          if (adminStatus) {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
         }
       } catch (error) {
         console.error("Error in auth initialization:", error);
@@ -64,10 +72,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("Auth state changed:", event);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      setLoading(false);
 
       if (event === 'SIGNED_IN') {
-        // Check if user is admin and redirect accordingly
         const adminStatus = await isAdmin;
         if (adminStatus) {
           navigate('/admin');
@@ -75,6 +81,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           navigate('/');
         }
       }
+      
+      setLoading(false);
     });
 
     return () => {
