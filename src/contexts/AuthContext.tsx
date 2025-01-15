@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Session, User } from "@supabase/supabase-js";
+import { Session, User, AuthError } from "@supabase/supabase-js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { NetworkError, AuthenticationError } from "@/lib/supabase/errors";
@@ -105,13 +105,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     
     try {
+      console.log("Attempting sign in with email:", email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Sign in error:", error);
+        throw error;
+      }
       
+      console.log("Sign in successful:", data);
       const adminStatus = await isAdmin;
       
       if (adminStatus) {
@@ -126,8 +131,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error instanceof NetworkError) {
         toast.error("Network error. Please check your connection.");
-      } else if (error instanceof AuthenticationError) {
-        toast.error("Invalid email or password.");
+      } else if (error instanceof AuthError) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error("Invalid email or password. Please check your credentials.");
+        } else {
+          toast.error(error.message);
+        }
       } else {
         toast.error("Failed to sign in. Please try again.");
       }

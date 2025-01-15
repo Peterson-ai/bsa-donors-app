@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useAdmin } from "@/hooks/useAdmin";
+import { AuthError } from "@supabase/supabase-js";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,27 +25,40 @@ const Login = () => {
     setEmailNotConfirmed(false);
     
     try {
+      if (!email || !password) {
+        throw new Error("Please enter both email and password");
+      }
+
       await signIn(email, password);
       
       // The redirect will be handled in AuthContext based on admin status
     } catch (error: any) {
       console.error("Login error:", error);
       
-      if (error.message?.includes('email_not_confirmed') || 
-          error?.body?.includes('email_not_confirmed')) {
-        setEmailNotConfirmed(true);
-        toast({
-          variant: "destructive",
-          title: "Email Not Verified",
-          description: "Please check your email and verify your account before logging in.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: "Please check your email and password and try again.",
-        });
+      let errorMessage = "Failed to sign in. Please try again.";
+      
+      if (error instanceof AuthError) {
+        switch (error.message) {
+          case "Email not confirmed":
+            setEmailNotConfirmed(true);
+            errorMessage = "Please verify your email before logging in.";
+            break;
+          case "Invalid login credentials":
+            errorMessage = "Invalid email or password. Please check your credentials.";
+            break;
+          case "Invalid email or password":
+            errorMessage = "Invalid email or password. Please check your credentials.";
+            break;
+          default:
+            errorMessage = error.message;
+        }
       }
+      
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
