@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { isAdmin } from '@/lib/admin';
+import { supabase } from '@/lib/supabase';
+import { toast } from "sonner";
 
 export function useAdmin() {
   const { user } = useAuth();
@@ -9,23 +10,35 @@ export function useAdmin() {
 
   useEffect(() => {
     const checkAdminStatus = async () => {
+      if (!user) {
+        setIsUserAdmin(false);
+        setLoading(false);
+        return;
+      }
+
       try {
-        const adminStatus = await isAdmin(user);
-        setIsUserAdmin(adminStatus);
+        console.log('Checking admin status for user:', user.id);
+        const { data, error } = await supabase.rpc('is_admin', {
+          user_id: user.id
+        });
+
+        if (error) {
+          console.error('Error checking admin status:', error);
+          toast.error('Error checking admin permissions');
+          throw error;
+        }
+
+        console.log('Admin status result:', data);
+        setIsUserAdmin(!!data);
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error('Error in admin check:', error);
         setIsUserAdmin(false);
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) {
-      checkAdminStatus();
-    } else {
-      setIsUserAdmin(false);
-      setLoading(false);
-    }
+    checkAdminStatus();
   }, [user]);
 
   return { isAdmin: isUserAdmin, loading };
