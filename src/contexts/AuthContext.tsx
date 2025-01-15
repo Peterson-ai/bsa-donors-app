@@ -83,6 +83,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setSession(null);
         navigate('/login');
       }
       
@@ -137,23 +139,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
-    setLoading(true);
-    
     try {
+      setLoading(true);
       const { error } = await supabase.auth.signOut();
       
-      if (error) throw error;
+      if (error) {
+        console.error("Sign out error:", error);
+        toast.error("Error during sign out");
+        throw error;
+      }
       
+      // Clear auth state
       setUser(null);
       setSession(null);
+      
+      // Show success message and redirect
       toast.success("Successfully signed out");
-      navigate("/login");
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Sign out error:", error);
-      setUser(null);
-      setSession(null);
       toast.error("Error during sign out");
-      navigate("/login");
     } finally {
       setLoading(false);
     }
