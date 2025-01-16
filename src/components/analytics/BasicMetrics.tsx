@@ -57,7 +57,7 @@ export const BasicMetrics = () => {
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-[#0D1425] p-4 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400">Total Donations</span>
+            <span className="text-gray-400">Combined Donations</span>
             <span className="text-blue-400">$</span>
           </div>
           <p className="text-xl font-bold text-white">{formatCurrency(totalDonations)}</p>
