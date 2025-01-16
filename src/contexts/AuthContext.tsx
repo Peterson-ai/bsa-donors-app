@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleInitialRedirect = async (currentUser: User) => {
     if (location.pathname === '/login') {
-      // Check if user has admin role in metadata
       const isAdmin = currentUser?.user_metadata?.role === 'admin';
       console.log('Checking admin status:', { isAdmin, metadata: currentUser?.user_metadata });
       
@@ -121,7 +120,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       console.log("Sign in successful:", data);
       
-      // Check admin status from user metadata
       const isAdmin = data.user?.user_metadata?.role === 'admin';
       console.log('User admin status:', isAdmin);
       
@@ -156,24 +154,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       setLoading(true);
+      
+      // Clear auth state first
+      setUser(null);
+      setSession(null);
+      
+      // Attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error("Sign out error:", error);
-        toast.error("Error during sign out");
-        throw error;
+        // Even if there's an error, we'll continue with the local cleanup
+        if (error.message !== "session_not_found") {
+          toast.error("Error during sign out");
+        }
       }
       
-      // Clear auth state
-      setUser(null);
-      setSession(null);
-      
-      // Show success message and redirect
+      // Always redirect and show success message
       toast.success("Successfully signed out");
       navigate("/login", { replace: true });
+      
     } catch (error) {
       console.error("Sign out error:", error);
-      toast.error("Error during sign out");
+      // Continue with local cleanup even if there's an error
+      toast.error("Error during sign out, but session cleared locally");
+      navigate("/login", { replace: true });
     } finally {
       setLoading(false);
     }
