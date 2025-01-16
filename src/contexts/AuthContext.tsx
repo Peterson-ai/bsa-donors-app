@@ -77,17 +77,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log("Auth state changed:", event);
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-
-      if (event === 'SIGNED_IN' && currentSession?.user) {
-        await handleInitialRedirect(currentSession.user);
-      }
       
-      if (event === 'SIGNED_OUT') {
+      if (currentSession) {
+        setSession(currentSession);
+        setUser(currentSession.user);
+        
+        if (event === 'SIGNED_IN') {
+          await handleInitialRedirect(currentSession.user);
+        }
+      } else {
         setUser(null);
         setSession(null);
-        navigate('/login');
+        
+        if (event === 'SIGNED_OUT') {
+          navigate('/login');
+        }
       }
       
       setLoading(false);
@@ -154,21 +158,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       setLoading(true);
-      
-      // Clear auth state first
-      setUser(null);
-      setSession(null);
-      
-      // Attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error("Sign out error:", error);
-        // Even if there's an error, we'll continue with the local cleanup
         if (error.message !== "session_not_found") {
           toast.error("Error during sign out");
         }
       }
+      
+      // Clear auth state
+      setUser(null);
+      setSession(null);
       
       // Always redirect and show success message
       toast.success("Successfully signed out");
@@ -176,7 +177,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
     } catch (error) {
       console.error("Sign out error:", error);
-      // Continue with local cleanup even if there's an error
       toast.error("Error during sign out, but session cleared locally");
       navigate("/login", { replace: true });
     } finally {
