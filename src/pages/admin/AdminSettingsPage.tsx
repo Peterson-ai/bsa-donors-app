@@ -17,12 +17,12 @@ const AdminSettingsPage = () => {
       <div className="grid gap-6">
         <Card className="bg-[#1A2235] border-gray-800">
           <div className="p-6">
-            <h2 className="text-lg font-medium mb-4">Email Notifications</h2>
+            <h2 className="text-lg font-medium text-white mb-4">Email Notifications</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>New Donation Alerts</Label>
-                  <p className="text-sm text-gray-400">
+                  <Label className="text-white">New Donation Alerts</Label>
+                  <p className="text-sm text-[#D6BCFA]">
                     Receive notifications for new donations
                   </p>
                 </div>
@@ -30,8 +30,8 @@ const AdminSettingsPage = () => {
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Campaign Updates</Label>
-                  <p className="text-sm text-gray-400">
+                  <Label className="text-white">Campaign Updates</Label>
+                  <p className="text-sm text-[#D6BCFA]">
                     Get notified about campaign milestones
                   </p>
                 </div>
@@ -43,17 +43,17 @@ const AdminSettingsPage = () => {
 
         <Card className="bg-[#1A2235] border-gray-800">
           <div className="p-6">
-            <h2 className="text-lg font-medium mb-4">Security Settings</h2>
+            <h2 className="text-lg font-medium text-white mb-4">Security Settings</h2>
             <div className="space-y-4">
               <div>
-                <Label>Two-Factor Authentication</Label>
+                <Label className="text-white">Two-Factor Authentication</Label>
                 <div className="flex items-center mt-2">
                   <Switch />
-                  <span className="ml-2 text-sm text-gray-400">Enable 2FA</span>
+                  <span className="ml-2 text-sm text-[#D6BCFA]">Enable 2FA</span>
                 </div>
               </div>
               <div>
-                <Label>Session Timeout (minutes)</Label>
+                <Label className="text-white">Session Timeout (minutes)</Label>
                 <Input 
                   type="number" 
                   defaultValue="30"
@@ -66,12 +66,12 @@ const AdminSettingsPage = () => {
 
         <Card className="bg-[#1A2235] border-gray-800">
           <div className="p-6">
-            <h2 className="text-lg font-medium mb-4">System Preferences</h2>
+            <h2 className="text-lg font-medium text-white mb-4">System Preferences</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Maintenance Mode</Label>
-                  <p className="text-sm text-gray-400">
+                  <Label className="text-white">Maintenance Mode</Label>
+                  <p className="text-sm text-[#D6BCFA]">
                     Temporarily disable user access
                   </p>
                 </div>
@@ -79,8 +79,8 @@ const AdminSettingsPage = () => {
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Debug Mode</Label>
-                  <p className="text-sm text-gray-400">
+                  <Label className="text-white">Debug Mode</Label>
+                  <p className="text-sm text-[#D6BCFA]">
                     Enable detailed error logging
                   </p>
                 </div>
@@ -93,7 +93,7 @@ const AdminSettingsPage = () => {
         <div className="flex justify-end">
           <Button 
             onClick={handleSave}
-            className="bg-[#6366F1] hover:bg-[#5558DD]"
+            className="bg-[#6366F1] hover:bg-[#5558DD] text-white"
           >
             Save Changes
           </Button>
