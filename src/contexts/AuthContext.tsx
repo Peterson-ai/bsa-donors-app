@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { NetworkError, AuthenticationError } from "@/lib/supabase/errors";
 import { useSupabaseConnection } from "@/lib/supabase/hooks";
-import { useAdmin } from "@/hooks/useAdmin";
 
 interface AuthContextType {
   user: User | null;
@@ -32,14 +31,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isConnected } = useSupabaseConnection();
-  const { isAdmin, loading: adminLoading } = useAdmin();
 
   const handleInitialRedirect = async (currentUser: User) => {
     if (location.pathname === '/login') {
-      const adminStatus = await isAdmin;
-      if (adminStatus) {
+      // Check if user has admin role in metadata
+      const isAdmin = currentUser?.user_metadata?.role === 'admin';
+      console.log('Checking admin status:', { isAdmin, metadata: currentUser?.user_metadata });
+      
+      if (isAdmin) {
+        console.log('Redirecting to admin dashboard');
         navigate('/admin');
       } else {
+        console.log('Redirecting to user dashboard');
         navigate('/');
       }
     }
@@ -94,7 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, isAdmin, location.pathname]);
+  }, [navigate, location.pathname]);
 
   const signIn = async (email: string, password: string) => {
     if (!isConnected) {
@@ -117,9 +120,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       console.log("Sign in successful:", data);
-      const adminStatus = await isAdmin;
       
-      if (adminStatus) {
+      // Check admin status from user metadata
+      const isAdmin = data.user?.user_metadata?.role === 'admin';
+      console.log('User admin status:', isAdmin);
+      
+      if (isAdmin) {
         toast.success("Welcome back, Admin!");
         navigate("/admin");
       } else {

@@ -18,6 +18,15 @@ export function useAdmin() {
 
       try {
         console.log('Checking admin status for user:', user.id);
+        // First check user metadata
+        if (user.user_metadata?.role === 'admin') {
+          console.log('User is admin based on metadata');
+          setIsUserAdmin(true);
+          setLoading(false);
+          return;
+        }
+
+        // Fallback to RPC check
         const { data, error } = await supabase.rpc('is_admin', {
           user_id: user.id
         });
