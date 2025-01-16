@@ -82,9 +82,9 @@ const AdminDashboard = () => {
 
   // Calculate monthly growth
   const monthlyGrowth = monthlyTrends?.length >= 2 
-    ? ((monthlyTrends[monthlyTrends.length - 1].amount - 
+    ? Number(((monthlyTrends[monthlyTrends.length - 1].amount - 
         monthlyTrends[monthlyTrends.length - 2].amount) / 
-        monthlyTrends[monthlyTrends.length - 2].amount * 100).toFixed(1)
+        monthlyTrends[monthlyTrends.length - 2].amount * 100).toFixed(1))
     : 0;
 
   return (
@@ -109,8 +109,8 @@ const AdminDashboard = () => {
           title="Monthly Growth"
           value={`${monthlyGrowth}%`}
           change={monthlyGrowth > 0 ? 
-            { value: Number(monthlyGrowth), trend: 'up' } : 
-            { value: Math.abs(Number(monthlyGrowth)), trend: 'down' }
+            { value: monthlyGrowth, trend: 'up' } : 
+            { value: Math.abs(monthlyGrowth), trend: 'down' }
           }
           icon={TrendingUp}
         />
