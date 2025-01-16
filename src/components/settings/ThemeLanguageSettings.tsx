@@ -21,7 +21,7 @@ export const ThemeLanguageSettings = () => {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-white">Dark Mode</Label>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-[#D6BCFA]">
                 Toggle between light and dark themes
               </p>
             </div>

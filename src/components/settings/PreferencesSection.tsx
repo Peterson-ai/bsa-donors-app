@@ -19,7 +19,7 @@ export const PreferencesSection = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-sm text-gray-400">Language</label>
+          <label className="text-sm text-[#D6BCFA]">Language</label>
           <Select defaultValue="en">
             <SelectTrigger className="bg-[#1A2235] border-gray-700 text-white">
               <SelectValue placeholder="Select language" />
@@ -33,7 +33,7 @@ export const PreferencesSection = () => {
         </div>
         <div className="flex items-center space-x-2">
           <Checkbox id="dark-mode" className="border-gray-600" defaultChecked />
-          <label htmlFor="dark-mode" className="text-gray-300">
+          <label htmlFor="dark-mode" className="text-white">
             Dark Mode
           </label>
         </div>

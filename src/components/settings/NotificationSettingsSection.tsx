@@ -13,19 +13,19 @@ export const NotificationSettingsSection = () => {
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
           <Checkbox id="donation-confirmations" className="border-gray-600" />
-          <label htmlFor="donation-confirmations" className="text-gray-300">
+          <label htmlFor="donation-confirmations" className="text-white">
             Donation Confirmations
           </label>
         </div>
         <div className="flex items-center space-x-2">
           <Checkbox id="platform-updates" className="border-gray-600" />
-          <label htmlFor="platform-updates" className="text-gray-300">
+          <label htmlFor="platform-updates" className="text-white">
             Platform Updates
           </label>
         </div>
         <div className="flex items-center space-x-2">
           <Checkbox id="event-notifications" className="border-gray-600" />
-          <label htmlFor="event-notifications" className="text-gray-300">
+          <label htmlFor="event-notifications" className="text-white">
             Event Notifications
           </label>
         </div>
