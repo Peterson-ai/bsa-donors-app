@@ -1,11 +1,16 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { adminNavigationItems } from "@/config/admin-navigation";
-import { LogOut } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
-export const AdminSidebar = () => {
+interface AdminSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -16,15 +21,29 @@ export const AdminSidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-[#0D1425] border-r border-gray-800 h-screen fixed left-0 top-0 flex flex-col">
+    <aside className={cn(
+      "w-64 bg-[#0D1425] border-r border-gray-800 h-screen fixed left-0 top-0 z-50 transition-transform duration-300 transform",
+      "lg:translate-x-0",
+      isOpen ? "translate-x-0" : "-translate-x-full"
+    )}>
       <div className="p-4 flex-1">
-        <div className="flex items-center space-x-3 mb-8">
-          <img 
-            src="/lovable-uploads/d73c5a4d-124a-4e2e-b3e8-4af49f90719d.png"
-            alt="BSA Logo" 
-            className="h-10 w-10"
-          />
-          <span className="text-lg font-semibold text-white">Admin Portal</span>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/d73c5a4d-124a-4e2e-b3e8-4af49f90719d.png"
+              alt="BSA Logo" 
+              className="h-10 w-10"
+            />
+            <span className="text-lg font-semibold text-white">Admin Portal</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={onClose}
+          >
+            <X className="h-5 w-5 text-gray-400" />
+          </Button>
         </div>
 
         <nav className="space-y-1">
@@ -36,6 +55,7 @@ export const AdminSidebar = () => {
               <Link
                 key={item.href}
                 to={item.href}
+                onClick={() => onClose()}
                 className={cn(
                   "flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors",
                   isActive 

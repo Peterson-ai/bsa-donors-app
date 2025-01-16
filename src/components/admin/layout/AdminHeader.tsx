@@ -2,10 +2,15 @@ import { Bell } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const AdminHeader = () => {
+interface AdminHeaderProps {
+  children?: React.ReactNode;
+}
+
+export const AdminHeader = ({ children }: AdminHeaderProps) => {
   return (
     <header className="flex items-center justify-between p-4 bg-[#0D1425] border-b border-gray-800">
-      <div className="flex-1 max-w-xl">
+      <div className="flex items-center flex-1 max-w-xl">
+        {children}
         <Input
           type="search"
           placeholder="Search..."
