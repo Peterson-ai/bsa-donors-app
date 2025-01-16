@@ -52,11 +52,7 @@ const AnalyticsPage = () => {
       </div>
 
       <div className="grid gap-6">
-        <BasicMetrics
-          totalDonations={analyticsData?.total_donations || 0}
-          averageDonation={analyticsData?.average_donation || 0}
-          totalDonors={analyticsData?.total_donors || 0}
-        />
+        <BasicMetrics />
 
         <div className="grid grid-cols-2 gap-6">
           <RFMAnalysis
